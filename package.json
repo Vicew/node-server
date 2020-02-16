@@ -19,6 +19,7 @@
   "homepage": "https://github.com/Vicew/Node-Server#readme",
   "devDependencies": {
     "cross-env": "^7.0.0",
+    "mysql": "^2.18.1",
     "nodemon": "^2.0.2"
   }
 }
