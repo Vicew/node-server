@@ -2,6 +2,9 @@ const querystring = require('querystring')
 const handleBlogRouter = require('./src/router/blog')
 const handleUserRouter = require('./src/router/user')
 
+// session 数据
+const SESSION_DATA = {}
+
 // 用于处理 post data
 const getPostData = (req) => {
   const promise = new Promise((resolve, reject) => {
@@ -41,6 +44,33 @@ const serverHandle = (req,res) => {
   // 解析query
   req.query = querystring.parse(url.split('?')[1])
 
+  // 解析cookie
+  req.cookie = {}
+  const cookieStr = req.headers.cookie || ''
+  cookieStr.split(';').forEach(item => {
+    if(!item) {
+      return
+    }
+    const arr = item.split('=')
+    const key = arr[0].trim()
+    const val = arr[1].trim()
+    req.cookie[key] = val
+  })
+
+  // 解析 session
+  const needSetCookie = false
+  const userId = req.cookie.userid
+  if(userId) {
+    if(!SESSION_DATA[userId]) {
+      SESSION_DATA[userId] = {}
+    }
+  } else {
+    needSetCookie = true
+    userId = `${+new Date()}_${Math.random()}`
+    SESSION_DATA[userId] = {}
+  }
+  req.session = SESSION_DATA[userId]
+ 
   // 处理 post data
   getPostData(req).then(postData => {
     req.body = postData
