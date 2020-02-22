@@ -88,6 +88,7 @@ const serverHandle = (req,res) => {
     // 初始化 redis 中的 session 值
     set(userId, {})
   }
+  console.log(req.host)
   // 获取 session
   req.sessionId = userId
   get(req.sessionId).then(sessionData => {
@@ -100,7 +101,6 @@ const serverHandle = (req,res) => {
       // 设置 session
       req.session = sessionData
     }
-    console.log(req.session)
     // 处理 post data
     return getPostData(req)
   }).then(postData => {
